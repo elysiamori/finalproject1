@@ -1,0 +1,158 @@
+basePath: /api
+definitions:
+  models.Todos:
+    properties:
+      completed:
+        example: true
+        type: boolean
+      id:
+        example: 1
+        type: integer
+      title:
+        example: Belajar Golang
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: Todos API Kelompok 6
+  title: Todolist APP
+  version: "1"
+paths:
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: Get All Todos
+      parameters:
+      - description: Payload Body [RAW]
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.Todos'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todos'
+        "400":
+          description: Bad Request
+      summary: Get All Todos
+      tags:
+      - Todos
+    post:
+      consumes:
+      - application/json
+      description: Add Todos
+      parameters:
+      - description: Title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Completed
+        in: body
+        name: completed
+        required: true
+        schema:
+          type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todos'
+        "400":
+          description: Bad Request
+      summary: Add Todos
+      tags:
+      - Todos
+  /todos/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete Todos
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Delete Todos
+      tags:
+      - Todos
+    get:
+      consumes:
+      - application/json
+      description: Get Todos By ID
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todos'
+        "404":
+          description: Not Found
+      summary: Get Todos By ID
+      tags:
+      - Todos
+    put:
+      consumes:
+      - application/json
+      description: Update Todos
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Title
+        in: body
+        name: title
+        required: true
+        schema:
+          type: string
+      - description: Completed
+        in: body
+        name: completed
+        required: true
+        schema:
+          type: boolean
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Todos'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+      summary: Update Todos
+      tags:
+      - Todos
+swagger: "2.0"
