@@ -28,17 +28,6 @@ const docTemplate = `{
                     "Todos"
                 ],
                 "summary": "Get All Todos",
-                "parameters": [
-                    {
-                        "description": "Payload Body [RAW]",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Todos"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -65,22 +54,18 @@ const docTemplate = `{
                 "summary": "Add Todos",
                 "parameters": [
                     {
+                        "type": "string",
                         "description": "Title",
                         "name": "title",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
+                        "in": "query",
+                        "required": true
                     },
                     {
-                        "description": "Completed",
+                        "type": "boolean",
+                        "description": "Completed Status",
                         "name": "completed",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -149,24 +134,6 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Title",
-                        "name": "title",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "description": "Completed",
-                        "name": "completed",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
                     }
                 ],
                 "responses": {
