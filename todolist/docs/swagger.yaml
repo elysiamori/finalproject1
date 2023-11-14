@@ -24,13 +24,6 @@ paths:
       consumes:
       - application/json
       description: Get All Todos
-      parameters:
-      - description: Payload Body [RAW]
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/models.Todos'
       produces:
       - application/json
       responses:
@@ -49,17 +42,15 @@ paths:
       description: Add Todos
       parameters:
       - description: Title
-        in: body
+        in: query
         name: title
         required: true
-        schema:
-          type: string
-      - description: Completed
-        in: body
+        type: string
+      - description: Completed Status
+        in: query
         name: completed
         required: true
-        schema:
-          type: boolean
+        type: boolean
       produces:
       - application/json
       responses:
@@ -129,18 +120,6 @@ paths:
         name: id
         required: true
         type: integer
-      - description: Title
-        in: body
-        name: title
-        required: true
-        schema:
-          type: string
-      - description: Completed
-        in: body
-        name: completed
-        required: true
-        schema:
-          type: boolean
       produces:
       - application/json
       responses:
