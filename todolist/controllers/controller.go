@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/elysiamori/finalproject1/kelompok6/config"
 	"github.com/elysiamori/finalproject1/kelompok6/models"
@@ -12,14 +14,17 @@ import (
 // @Summary Get All Todos
 // @Description Get All Todos
 // @Tags Todos
-// @Param request body models.Todos true "Payload Body [RAW]"
 // @Accept json
 // @Produce json
 // @Success 200 {object} models.Todos
 // @Failure 400
 // @Router /todos [get]
 func GetAllTodos(c *gin.Context) {
-	db := config.DBConn()
+	db, errDB := config.DBConn()
+	if errDB != nil {
+		fmt.Println(errDB)
+	}
+
 	var todos []models.Todos
 	err := db.Find(&todos).Error
 
@@ -47,7 +52,10 @@ func GetAllTodos(c *gin.Context) {
 // @Failure 404
 // @Router /todos/{id} [get]
 func GetTodosID(c *gin.Context) {
-	db := config.DBConn()
+	db, errDB := config.DBConn()
+	if errDB != nil {
+		fmt.Println(errDB)
+	}
 	var todos models.Todos
 	id := c.Param("id")
 	err := db.First(&todos, id).Error
@@ -70,22 +78,24 @@ func GetTodosID(c *gin.Context) {
 // @Tags Todos
 // @Accept json
 // @Produce json
-// @Param title body string true "Title"
-// @Param completed body bool true "Completed"
+// @Param title query string true "Title"
+// @Param completed query boolean true "Completed Status"
 // @Success 200 {object} models.Todos
 // @Failure 400
 // @Router /todos [post]
 func AddTodos(c *gin.Context) {
-	db := config.DBConn()
-	var todos models.Todos
-	err := c.ShouldBindJSON(&todos)
-
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Gagal menambahkan todo",
-		})
-		return
+	db, errDB := config.DBConn()
+	if errDB != nil {
+		fmt.Println(errDB)
 	}
+	var todos models.Todos
+
+	title := c.DefaultQuery("title", "")
+	completedStr := c.DefaultQuery("completed", "false")
+	completed, _ := strconv.ParseBool(completedStr)
+
+	todos.Title = title
+	todos.Completed = completed
 
 	if err := db.Create(&todos).Error; err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
@@ -101,44 +111,45 @@ func AddTodos(c *gin.Context) {
 	})
 }
 
-// Update Todos
+// UpdateTodos Todos
 // @Summary Update Todos
 // @Description Update Todos
 // @Tags Todos
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param title body string true "Title"
-// @Param completed body bool true "Completed"
 // @Success 200 {object} models.Todos
-// @Failure 404
 // @Failure 400
+// @Failure 404
 // @Router /todos/{id} [put]
 func UpdateTodos(c *gin.Context) {
-	db := config.DBConn()
-	var todos models.Todos
+	db, errDB := config.DBConn()
+	if errDB != nil {
+		fmt.Println(errDB)
+	}
+	var existingTodo models.Todos
 	id := c.Param("id")
-	err := db.First(&todos, id).Error
 
-	if err != nil {
+	// Check if the todo with the given ID exists
+	if err := db.First(&existingTodo, id).Error; err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{
 			"error": "Todo tidak ditemukan",
 		})
 		return
 	}
 
-	c.ShouldBindJSON(&todos)
-	err = db.Save(&todos).Error
+	existingTodo.Completed = true
 
-	if err != nil {
+	// Save the updated todo to the database
+	if err := db.Save(&existingTodo).Error; err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Gagal mengupdate todo",
+			"error": "Failed to update todo",
 		})
 		return
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
-		"todos": todos,
+		"todos": existingTodo,
 	})
 }
 
@@ -154,7 +165,10 @@ func UpdateTodos(c *gin.Context) {
 // @Failure 400
 // @Router /todos/{id} [delete]
 func DeleteTodos(c *gin.Context) {
-	db := config.DBConn()
+	db, errDB := config.DBConn()
+	if errDB != nil {
+		fmt.Println(errDB)
+	}
 	var todos models.Todos
 	id := c.Param("id")
 	err := db.First(&todos, id).Error
