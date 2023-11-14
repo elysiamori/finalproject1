@@ -6,3 +6,4 @@ type Todos struct {
 	Title     string `gorm:"type:varchar(255)" json:"title" example:"Belajar Golang"`
 	Completed bool   `json:"completed" example:"true"`
 }
+var Todolist = []Todos{}
